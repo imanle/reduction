@@ -6,7 +6,7 @@
 __global__ void reduce_kernel(float* input, float* sum, unsigned int N) {
     __shared__ float input_s[BLOCK_DIM];
     
-    unsigned int i = N / 2*blockIdx.x * BLOCK_DIM + threadIdx.x;
+    unsigned int i = (N / 2)*blockIdx.x * BLOCK_DIM + threadIdx.x;
     
     if (i < N) 
         input_s[threadIdx.x] = input[i] + input[blockIdx.x*BLOCK_DIM + threadIdx.x];
