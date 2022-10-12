@@ -4,19 +4,22 @@
 
 #define BLOCK_DIM 1024
 
-__global__ void reduce_kernel(float* input, float* sum, unsigned int N) {
+_global_ void reduce_kernel(float* input, float* sum, unsigned int N) {
+    _shared_ float input_s[BLOCK_DIM];
+    
+    unsigned int i = N / 2 + blockIdx.x * BLOCK_DIM + threadIdx.x;
+    
+    if (i < N) 
+        input_s[threadIdx.x] = input[i] + input[blockIdx.x * BLOCK_DIM + threadIdx.x];
+    __syncthreads();
 
-
-
-
-
-
-
-
-
-
-
-
+    for(unsigned int stride = BLOCK_DIM / 2; stride > 0; stride /=2) {
+        if (threadIdx.x >= stride ) 
+            input_s[threadIdx.x] += input_s[threadIdx.x - stride];
+        __syncthreads(); 
+    }
+    if (threadIdx.x == 0)
+        atomicAdd(sum, input_s[BLOCK_DIM - 1]);
 }
 
 float reduce_gpu(float* input, unsigned int N) {
