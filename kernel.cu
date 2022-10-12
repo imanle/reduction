@@ -1,11 +1,10 @@
-
 #include "common.h"
 #include "timer.h"
 
 #define BLOCK_DIM 1024
 
-_global_ void reduce_kernel(float* input, float* sum, unsigned int N) {
-    _shared_ float input_s[BLOCK_DIM];
+__global__ void reduce_kernel(float* input, float* sum, unsigned int N) {
+    __shared__ float input_s[BLOCK_DIM];
     
     unsigned int i = N / 2 + blockIdx.x * BLOCK_DIM + threadIdx.x;
     
@@ -73,4 +72,3 @@ float reduce_gpu(float* input, unsigned int N) {
     return sum;
 
 }
-
