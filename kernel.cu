@@ -14,7 +14,7 @@ __global__ void reduce_kernel(float* input, float* sum, unsigned int N) {
 
     for(unsigned int stride = BLOCK_DIM / 2; stride > 0; stride /=2) {
         if (threadIdx.x >= stride ) 
-            input_s[threadIdx.x] += input_s[BLOCK_DIM*threadIdx.x - stride];
+            input_s[threadIdx.x] += input_s[threadIdx.x - stride];
         __syncthreads(); 
     }
     if (threadIdx.x == 0)
