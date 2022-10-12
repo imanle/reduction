@@ -6,10 +6,10 @@
 __global__ void reduce_kernel(float* input, float* sum, unsigned int N) {
     __shared__ float input_s[BLOCK_DIM];
     
-    unsigned int i = (N/2) + blockIdx.x * BLOCK_DIM + threadIdx.x;
+    unsigned int i = (N/2) +2* blockIdx.x * BLOCK_DIM + threadIdx.x;
     
     if (i < N) 
-        input_s[threadIdx.x] = input[i] + input[ i+ BLOCK_DIM + threadIdx.x];
+        input_s[threadIdx.x] = input[i] + input[BLOCK_DIM + threadIdx.x];
     __syncthreads();
 
     for(unsigned int stride = BLOCK_DIM / 2; stride > 0; stride /=2) {
